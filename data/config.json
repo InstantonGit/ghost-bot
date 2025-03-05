@@ -1,0 +1,79 @@
+{
+  "storages": [
+    {
+      "name": "Storage 1",
+      "color": "#FF0000",
+      "categories": [
+        {
+          "name": "Category 1",
+          "emoji": "🍎",
+          "count": 0
+        },
+        {
+          "name": "Category 2",
+          "emoji": "🍌",
+          "count": 0
+        },
+        {
+          "name": "Category 3",
+          "emoji": "🍍",
+          "count": 0
+        }
+      ],
+      "channelId": "123456789012345678",
+      "modifyRole": "123456789012345678"
+    },
+    {
+      "name": "Test 1",
+      "color": 16711680,
+      "categories": [
+        {
+          "name": "red",
+          "emoji": "❤️",
+          "count": 10
+        },
+        {
+          "name": "white",
+          "emoji": "✅",
+          "count": 0
+        },
+        {
+          "name": "blue",
+          "emoji": "📘",
+          "count": 0
+        }
+      ],
+      "channelId": "1325941948963360854",
+      "modifyRole": "1325941948594393216"
+    },
+    {
+      "name": "Ghost Armory (Gunstore)",
+      "color": 16777215,
+      "categories": [
+        {
+          "name": "Glock 17",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "FNX",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "SNS",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "Pistol Ammo",
+          "emoji": "🚅",
+          "count": 0
+        }
+      ],
+      "channelId": "1345892557250498631",
+      "modifyRole": "1346971460643848333"
+    }
+  ],
+  "modRole": "1346971460643848333"
+}
