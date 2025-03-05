@@ -3,6 +3,22 @@ const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord
 const fs = require('fs');
 const path = require('path');
 
+const http = require('http');
+
+// Start a dummy server to keep Render happy (open a port)
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Discord bot is running!');
+});
+
+// Render will assign a PORT variable, use that
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});
+
+
 // Create a new client instance with necessary intents
 const client = new Client({
     intents: [
