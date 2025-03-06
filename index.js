@@ -68,10 +68,20 @@ client.on('interactionCreate', async interaction => {
     if (!command) return;
 
     try {
-        await command.execute(interaction);
+        // Defer the reply if the command takes longer to execute
+        if (!interaction.replied) {
+            await interaction.deferReply(); // This will let Discord know you're working on the response
+        }
+
+        await command.execute(interaction); // Execute the command
+
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: 'There was an error executing this command.', ephemeral: true });
+
+        // Send an error reply if something goes wrong
+        if (!interaction.replied) {
+            await interaction.reply({ content: 'There was an error executing this command.', ephemeral: true });
+        }
     }
 });
 

@@ -15,7 +15,6 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        // Check if the user has the "ADMINISTRATOR" permission
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
@@ -42,6 +41,9 @@ module.exports = {
                 { name: 'Strikes', value: `${profile.strikes}`, inline: true }
             );
 
-        return interaction.reply({ embeds: [embed] });
+        // Reply with the embed if not already replied
+        if (!interaction.replied) {
+            return interaction.reply({ embeds: [embed] });
+        }
     },
 };
