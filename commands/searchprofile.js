@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -15,7 +15,8 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        if (!interaction.member.permissions.has('ADMINISTRATOR')) {
+        // Check if the user has the "ADMINISTRATOR" permission
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
 
