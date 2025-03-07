@@ -1,11 +1,252 @@
 {
-  "user_id_1": {
-    "strikes": 0
+  "743187283099779114": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
   },
-  "user_id_2": {
-    "strikes": 0
+  "138565346620735489": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "144620441841958913": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "215305610390929409": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "274749860677287936": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "275094814326915073": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "335892598973792267": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "344503801669091330": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "400089773802389504": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "402317586039308318": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "403038426632290316": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "442450757434736640": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "466916436942782476": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "494172980226818051": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "✅"
+      }
+    ]
+  },
+  "541279387400667147": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "546032084255375371": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "552619591994441742": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "637402686261559307": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "658495571052724224": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "706554903455203350": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "✅"
+      }
+    ]
+  },
+  "732984588304908330": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "777399257618841610": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
+  },
+  "840019269919047720": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
   },
   "873320717217853483": {
-    "strikes": 0
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "✅"
+      }
+    ]
+  },
+  "1062824393480355860": {
+    "strikes": 0,
+    "dues": [
+      {
+        "name": "Gun Store",
+        "amount": 18000,
+        "status": "❌"
+      }
+    ]
   }
 }

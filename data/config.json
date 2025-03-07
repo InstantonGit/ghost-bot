@@ -58,6 +58,92 @@
         {
           "name": "FNX",
           "emoji": "🔫",
+          "count": 1
+        },
+        {
+          "name": "SNS",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "Pistol Ammo",
+          "emoji": "🚅",
+          "count": 0
+        }
+      ],
+      "channelId": "1345892557250498631",
+      "modifyRole": "1346971460643848333"
+    },
+    {
+      "name": "Gang Stash (guns)",
+      "color": 16777215,
+      "categories": [
+        {
+          "name": "Glock 17",
+          "emoji": "🔫",
+          "count": 19
+        },
+        {
+          "name": "Heavy Pistol",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "FNX",
+          "emoji": "🔫",
+          "count": 6
+        },
+        {
+          "name": "Deagle",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "Vintage Pistol",
+          "emoji": "🔫",
+          "count": 1
+        },
+        {
+          "name": "Pistol",
+          "emoji": "🔫",
+          "count": 5
+        },
+        {
+          "name": "Pistol Ammo",
+          "emoji": "🚅",
+          "count": 85
+        },
+        {
+          "name": "Armor",
+          "emoji": "🛡️",
+          "count": 103
+        },
+        {
+          "name": "Bandages",
+          "emoji": "❤️",
+          "count": 430
+        },
+        {
+          "name": "IFAKs",
+          "emoji": "❤️",
+          "count": 0
+        }
+      ],
+      "channelId": "1345892557250498631",
+      "modifyRole": "1346971460643848333"
+    },
+    {
+      "name": "Ghost Armory (job runs)",
+      "color": 16777215,
+      "categories": [
+        {
+          "name": "Glock 17",
+          "emoji": "🔫",
+          "count": 0
+        },
+        {
+          "name": "FNX",
+          "emoji": "🔫",
           "count": 0
         },
         {
