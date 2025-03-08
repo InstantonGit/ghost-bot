@@ -28,14 +28,16 @@ module.exports = {
         // Loop through each user's profile to find dues
         for (const [userId, profile] of Object.entries(profiles)) {
             if (profile.dues && profile.dues.length > 0) {
-                const user = await interaction.guild.members.fetch(userId).catch(() => null);
-                if (!user) continue; // Skip if user is not in guild
+                const member = await interaction.guild.members.fetch(userId).catch(() => null);
+                if (!member) continue; // Skip if user is not in guild
+
+                const displayName = member.nickname || member.user.username; // Use nickname if available, otherwise username
 
                 let duesText = profile.dues.map(due => 
                     `**${due.name}**: ${due.amount} | ${due.status}`
                 ).join("\n");
 
-                duesList.push(`**${user.user.tag}**\n${duesText}`);
+                duesList.push(`**${displayName}**\n${duesText}`);
             }
         }
 
