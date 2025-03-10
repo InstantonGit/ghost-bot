@@ -24,6 +24,14 @@ module.exports = {
 
             // Loop through each profile and assign the due
             for (const profile of profiles) {
+                // Skip users with roles in the ignoreRoles array
+                const member = await interaction.guild.members.fetch(profile.userId).catch(() => null);
+                if (!member) continue; // Skip if user is not in guild
+
+                const ignoreRoles = profile.ignoreRoles || [];
+                const hasIgnoredRole = member.roles.cache.some(role => ignoreRoles.includes(role.id));
+                if (hasIgnoredRole) continue; // Skip if the user has an ignored role
+
                 if (!profile.dues) {
                     profile.dues = []; // If no dues exist, initialize them
                 }

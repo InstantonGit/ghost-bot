@@ -7,7 +7,8 @@ const profileSchema = new mongoose.Schema({
         name: String,
         amount: Number,
         status: { type: String, default: '❌' }
-    }]
+    }],
+    ignoreRoles: [{ type: String }] // New field for ignoring roles
 });
 
 module.exports = mongoose.model('Profile', profileSchema);
