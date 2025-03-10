@@ -1,9 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-
-const profilesPath = path.join(__dirname, '../data/profiles.json');
-const configPath = path.join(__dirname, '../data/config.json');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Profile = require('../models/profile'); // Import the Profile model
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,49 +17,44 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        // Load config.json to get modRole
-        if (!fs.existsSync(configPath)) {
-            return interaction.reply({ content: 'Configuration file not found.', ephemeral: true });
-        }
-
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        const modRoleId = config.modRole;
-
-        // Check if user has the modRole
-        if (!interaction.member.roles.cache.has(modRoleId)) {
+        // Check if the user has the required modRole
+        const modRole = interaction.client.config.modRole; // Get modRole from the config
+        if (!interaction.member.roles.cache.has(modRole)) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
 
         const user = interaction.options.getUser('user');
         const dueName = interaction.options.getString('duename');
 
-        // Load profile data
-        if (!fs.existsSync(profilesPath)) {
-            return interaction.reply({ content: 'No profile data found.', ephemeral: true });
+        try {
+            // Find the user's profile in the database
+            let userProfile = await Profile.findOne({ userId: user.id });
+            if (!userProfile) {
+                return interaction.reply({ content: 'This user does not have a profile.', ephemeral: true });
+            }
+
+            // Find the due in the user's profile
+            const dueIndex = userProfile.dues.findIndex(d => d.name.toLowerCase() === dueName.toLowerCase());
+            if (dueIndex === -1) {
+                return interaction.reply({ content: `No due found with the name "${dueName}" for this user.`, ephemeral: true });
+            }
+
+            // Remove the due from the array
+            userProfile.dues.splice(dueIndex, 1);
+
+            // Save the updated profile to MongoDB
+            await userProfile.save();
+
+            // Confirmation embed
+            const embed = new EmbedBuilder()
+                .setTitle('Due Removed')
+                .setColor(0xFF0000)
+                .setDescription(`**${dueName}** has been removed from ${user.username}'s dues.`);
+
+            return interaction.reply({ embeds: [embed] });
+        } catch (error) {
+            console.error('Error removing due:', error);
+            return interaction.reply({ content: 'There was an error removing the due. Please try again later.', ephemeral: true });
         }
-
-        let profileData = JSON.parse(fs.readFileSync(profilesPath, 'utf8'));
-
-        // Check if the user has a profile
-        if (!profileData[user.id] || !profileData[user.id].dues) {
-            return interaction.reply({ content: 'This user has no dues recorded.', ephemeral: true });
-        }
-
-        let userDues = profileData[user.id].dues;
-        const initialLength = userDues.length;
-
-        // Filter out the due to remove it
-        userDues = userDues.filter(due => due.name.toLowerCase() !== dueName.toLowerCase());
-
-        // Check if a due was removed
-        if (userDues.length === initialLength) {
-            return interaction.reply({ content: `No due named **${dueName}** found for this user.`, ephemeral: true });
-        }
-
-        // Update profile data
-        profileData[user.id].dues = userDues;
-        fs.writeFileSync(profilesPath, JSON.stringify(profileData, null, 4));
-
-        await interaction.reply({ content: `Successfully removed due **${dueName}** from <@${user.id}>.`, ephemeral: false });
-    }
+    },
 };

@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-
-const configPath = path.join(__dirname, '../data/config.json');
+const Storage = require('../models/storage'); // Import the MongoDB Storage model
+const Config = require('../models/config'); // Import global config model (for modRole)
 
 // Manually define your color library
 const colorLibrary = {
@@ -33,12 +31,12 @@ module.exports = {
         )
         .addStringOption(option =>
             option.setName('category_names')
-                .setDescription('Comma separated list of category names (e.g., Category 1, Category 2)')
+                .setDescription('Comma-separated list of category names (e.g., Category 1, Category 2)')
                 .setRequired(true)
         )
         .addStringOption(option =>
             option.setName('category_emojis')
-                .setDescription('Comma separated list of emojis for categories (e.g., 🍎, 🍌)')
+                .setDescription('Comma-separated list of emojis for categories (e.g., 🍎, 🍌)')
                 .setRequired(true)
         )
         .addRoleOption(option =>
@@ -62,63 +60,64 @@ module.exports = {
         const modifyRole = interaction.options.getRole('modifyrole');
         const channel = interaction.options.getChannel('channel');
 
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        const modRoleId = config.modRole;  // Now we access modRole from the global config
+        // Get modRole from the database
+        const config = await Config.findOne();
+        if (!config || !config.modRole) {
+            return interaction.editReply({ content: 'Bot configuration is missing. Please set the modRole first.' });
+        }
+        const modRoleId = config.modRole;
 
         // Check if the user has the modRole
         if (!interaction.member.roles.cache.has(modRoleId)) {
             return interaction.editReply({ content: 'You do not have the required mod role to use this command.' });
         }
 
+        // Validate color input
         if (!colorLibrary[color] && !/^#[0-9A-F]{6}$/i.test(color)) {
             return interaction.editReply({ content: 'Invalid color. Please choose a valid color name or hex code.' });
         }
-
         const storageColor = colorLibrary[color] || color;
 
         if (categoryNames.length !== categoryEmojis.length) {
             return interaction.editReply({ content: 'The number of category names must match the number of category emojis.' });
         }
 
-        const newStorage = {
-            name: storageName,
-            color: storageColor,
-            categories: categoryNames.map((name, index) => ({
-                name,
-                emoji: categoryEmojis[index],
-                count: 0
-            })),
-            channelId: channel.id,
-            modifyRole: modifyRole.id
-        };
-
+        // Create and save storage in MongoDB
         try {
-            let storageConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-            if (!storageConfig.storages) {
-                storageConfig.storages = []; // Ensure storages array exists
-            }
-            storageConfig.storages.push(newStorage);
-            fs.writeFileSync(configPath, JSON.stringify(storageConfig, null, 2));
+            const newStorage = new Storage({
+                name: storageName,
+                color: storageColor,
+                categories: categoryNames.map((name, index) => ({
+                    name,
+                    emoji: categoryEmojis[index],
+                    count: 0
+                })),
+                channelId: channel.id,
+                modifyRole: modifyRole.id
+            });
+
+            await newStorage.save();
         } catch (error) {
-            console.error('Error saving the config:', error);
-            return interaction.editReply({ content: 'There was an error saving the storage configuration. Please try again later.' });
+            console.error('Error saving storage:', error);
+            return interaction.editReply({ content: 'An error occurred while saving the storage. Please try again.' });
         }
 
+        // Create the storage embed
         const embed = new EmbedBuilder()
             .setTitle(storageName)
             .setDescription('Manage categories in this storage.')
             .setColor(storageColor);
 
-        newStorage.categories.forEach(category => {
+        categoryNames.forEach((name, index) => {
             embed.addFields({
-                name: `${category.emoji} ${category.name}`,
-                value: `${category.count} items`,
+                name: `${categoryEmojis[index]} ${name}`,
+                value: `0 items`,
                 inline: true
             });
         });
 
         await channel.send({ embeds: [embed] });
 
-        return interaction.editReply({ content: `Storage "${storageName}" has been set up!` });
+        return interaction.editReply({ content: `Storage "${storageName}" has been set up successfully!` });
     }
 };

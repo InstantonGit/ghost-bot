@@ -1,8 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-
-const configPath = path.join(__dirname, '../data/config.json');
+const Storage = require('../models/storage'); // Import the MongoDB Storage model
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -37,32 +34,27 @@ module.exports = {
         const amount = interaction.options.getInteger('amount');
         const operation = interaction.options.getString('operation');
 
-        let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        const storage = config.storages.find(s => s.name.toLowerCase() === storageName.toLowerCase());
+        // Fetch storage from MongoDB
+        const storage = await Storage.findOne({ name: storageName });
 
         if (!storage) {
             return interaction.editReply({ content: `Storage "${storageName}" not found.` });
         }
 
-        // Check if the user has the correct modifyRole for this storage
-        const memberRoles = interaction.member.roles.cache;
-        if (!memberRoles.has(storage.modifyRole)) {
-            return interaction.editReply({ content: `You do not have the required permissions to modify this storage.` });
+        // Check if the user has the correct modifyRole
+        if (!interaction.member.roles.cache.has(storage.modifyRole)) {
+            return interaction.editReply({ content: `You do not have permission to modify this storage.` });
         }
 
+        // Find the category
         const category = storage.categories.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
         if (!category) {
             return interaction.editReply({ content: `Category "${categoryName}" not found in "${storageName}".` });
         }
 
         // Update category count
-        if (operation === 'add') {
-            category.count += amount;
-        } else {
-            category.count = Math.max(0, category.count - amount);
-        }
-
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        category.count = operation === 'add' ? category.count + amount : Math.max(0, category.count - amount);
+        await storage.save();
 
         // Fetch the channel and update the embed
         const channel = interaction.client.channels.cache.get(storage.channelId);

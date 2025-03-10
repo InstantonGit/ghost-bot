@@ -1,8 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-
-const profilesPath = path.join(__dirname, '../data/profiles.json');
+const Profile = require('../models/profile'); // Import the Profile model
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,22 +15,28 @@ module.exports = {
 
         const userId = interaction.options.getUser('user').id;
 
-        let profileData = JSON.parse(fs.readFileSync(profilesPath, 'utf8'));
+        try {
+            // Find the user's profile in MongoDB
+            let profile = await Profile.findOne({ userId });
 
-        if (!profileData[userId]) {
-            return interaction.reply({ content: 'This user does not have a profile.' });
+            // If no profile is found, inform the user
+            if (!profile) {
+                return interaction.reply({ content: 'This user does not have a profile.', ephemeral: true });
+            }
+
+            // If the user has strikes, remove one
+            if (profile.strikes > 0) {
+                profile.strikes -= 1;
+                await profile.save();
+            }
+
+            const strikes = profile.strikes;
+
+            // Respond with the updated strike count
+            await interaction.reply({ content: `${interaction.options.getUser('user').tag} now has ${strikes} strikes.` });
+        } catch (error) {
+            console.error('Error removing strike:', error);
+            await interaction.reply({ content: 'An error occurred while processing the command. Please try again later.', ephemeral: true });
         }
-
-        // Remove a strike
-        if (profileData[userId].strikes > 0) {
-            profileData[userId].strikes -= 1;
-        }
-
-        // Write the updated profile back to profiles.json
-        fs.writeFileSync(profilesPath, JSON.stringify(profileData, null, 2));
-
-        const strikes = profileData[userId].strikes;
-
-        await interaction.reply({ content: `${interaction.options.getUser('user').tag} now has ${strikes} strikes.` });
     }
 };

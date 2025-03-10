@@ -1,20 +1,5 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-const config = require('../data/config.json');
-
-const profilesPath = path.join(__dirname, '../data/profiles.json');
-
-// Function to read profiles
-function getProfiles() {
-    if (!fs.existsSync(profilesPath)) return {};
-    return JSON.parse(fs.readFileSync(profilesPath, 'utf8'));
-}
-
-// Function to save profiles
-function saveProfiles(profiles) {
-    fs.writeFileSync(profilesPath, JSON.stringify(profiles, null, 2), 'utf8');
-}
+const { SlashCommandBuilder } = require('discord.js');
+const Profile = require('../models/profile'); // Import the Profile model
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,7 +9,7 @@ module.exports = {
         .addIntegerOption(option => option.setName('dueamount').setDescription('Amount due').setRequired(true)),
 
     async execute(interaction) {
-        const modRole = config.modRole;
+        const modRole = interaction.client.config.modRole; // Get modRole from the config
         if (!interaction.member.roles.cache.has(modRole)) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
@@ -32,20 +17,28 @@ module.exports = {
         const dueName = interaction.options.getString('duename');
         const dueAmount = interaction.options.getInteger('dueamount');
 
-        let profiles = getProfiles();
-        let affectedUsers = 0;
+        try {
+            // Fetch all profiles from MongoDB
+            const profiles = await Profile.find();
+            let affectedUsers = 0;
 
-        // Loop through all stored profiles and assign the due
-        Object.keys(profiles).forEach(userId => {
-            if (!profiles[userId].dues) {
-                profiles[userId].dues = [];
+            // Loop through each profile and assign the due
+            for (const profile of profiles) {
+                if (!profile.dues) {
+                    profile.dues = []; // If no dues exist, initialize them
+                }
+
+                // Add the new due to the user's dues array
+                profile.dues.push({ name: dueName, amount: dueAmount, status: '❌' });
+                await profile.save(); // Save the updated profile
+                affectedUsers++;
             }
-            profiles[userId].dues.push({ name: dueName, amount: dueAmount, status: '❌' });
-            affectedUsers++;
-        });
 
-        saveProfiles(profiles);
+            return interaction.reply({ content: `Due **${dueName}** of **${dueAmount}** assigned to **${affectedUsers}** users.`, ephemeral: false });
 
-        return interaction.reply({ content: `Due **${dueName}** of **${dueAmount}** assigned to **${affectedUsers}** users.`, ephemeral: false });
+        } catch (error) {
+            console.error("Error assigning dues:", error);
+            return interaction.reply({ content: 'There was an error assigning the due. Please try again later.', ephemeral: true });
+        }
     }
 };

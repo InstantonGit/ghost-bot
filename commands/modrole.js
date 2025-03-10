@@ -1,7 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-const configPath = path.join(__dirname, '../data/config.json');
+const Config = require('../models/config'); // Import the Config model
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,27 +15,22 @@ module.exports = {
     async execute(interaction) {
         const role = interaction.options.getRole('role');
         
-        let config = {};
-        
-        // Check if config.json exists, if not, initialize it
-        if (fs.existsSync(configPath)) {
-            config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        } else {
-            config = { storages: [] }; // Initialize empty config if it doesn't exist
+        try {
+            // Fetch the global config from MongoDB
+            const config = await Config.findOne();
+            if (!config) {
+                return interaction.reply({ content: 'Bot configuration is missing. Please initialize the bot configuration first.', ephemeral: true });
+            }
+
+            // Update the modRole in the database
+            config.modRole = role.id;
+            await config.save(); // Save changes to MongoDB
+
+            // Send confirmation message
+            await interaction.reply({ content: `Moderator role has been set to ${role.name}.`, ephemeral: true });
+        } catch (error) {
+            console.error('Error updating mod role:', error);
+            return interaction.reply({ content: 'An error occurred while updating the moderator role. Please try again.', ephemeral: true });
         }
-
-        // Update or set the modRole in the config
-        config.modRole = role.id;
-
-        // Ensure storages array exists before saving config
-        if (!config.storages) {
-            config.storages = [];
-        }
-
-        // Write the updated config back to the config.json file
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-
-        // Send confirmation message
-        await interaction.reply({ content: `Moderator role set to ${role.name}.`, ephemeral: true });
     }
 };
